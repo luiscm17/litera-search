@@ -1,0 +1,5 @@
+package com.luiscm.literasearch.services;
+
+public interface IConvierteDatos {
+    <T> T obtenerDatos(String json, Class<T> clase);
+}
