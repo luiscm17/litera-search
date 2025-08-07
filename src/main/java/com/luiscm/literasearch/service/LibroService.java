@@ -93,4 +93,13 @@ public class LibroService {
     public List<Libro> obtenerTodosLosLibros() {
         return libroRepository.findAll();
     }
+    
+    /**
+     * Obtiene la cantidad de libros por idioma
+     * @param idioma Código del idioma (ej: "es", "en")
+     * @return Cantidad de libros en el idioma especificado
+     */
+    public Long contarLibrosPorIdioma(String idioma) {
+        return libroRepository.countByLanguage(idioma);
+    }
 }

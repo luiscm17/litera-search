@@ -40,6 +40,7 @@ public class MenuPrincipal {
             System.out.println("2. Buscar libros por título");
             System.out.println("3. Buscar libros por autor");
             System.out.println("4. Ver historial de búsqueda");
+            System.out.println("5. Ver estadísticas de libros");
             System.out.println("0. Salir");
             
             try {
@@ -52,6 +53,7 @@ public class MenuPrincipal {
                     case 2 -> buscarLibrosPorTitulo();
                     case 3 -> buscarLibrosPorAutor();
                     case 4 -> mostrarHistorialDeBusqueda();
+                    case 5 -> mostrarEstadisticas();
                     case 0 -> {
                         System.out.println("\nGracias por usar LiteraSearch. ¡Hasta pronto!");
                         System.exit(0);
@@ -222,5 +224,22 @@ public class MenuPrincipal {
             System.out.println(LINEA);
         }
         console.readLine("\nPresione Enter para continuar...");
+    }
+    
+    private void mostrarEstadisticas() {
+        System.out.println("\nESTADÍSTICAS DE LIBROS");
+        System.out.println(LINEA);
+        
+        // Obtener conteo de libros por idioma
+        Long librosEspanol = libroService.contarLibrosPorIdioma("es");
+        Long librosIngles = libroService.contarLibrosPorIdioma("en");
+        
+        System.out.println("Cantidad de libros por idioma:");
+        System.out.println(LINEA);
+        System.out.printf("- Español: %d libro(s)%n", librosEspanol);
+        System.out.printf("- Inglés: %d libro(s)%n", librosIngles);
+        System.out.println(LINEA);
+        
+        console.readLine("\nPresione Enter para volver al menú principal...");
     }
 }
