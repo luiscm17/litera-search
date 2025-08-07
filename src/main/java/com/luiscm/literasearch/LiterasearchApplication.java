@@ -4,10 +4,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.luiscm.literasearch.service.LibroService;
 import com.luiscm.literasearch.ui.MenuPrincipal;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringBootApplication
 public class LiterasearchApplication implements CommandLineRunner {
+
+    @Autowired
+    private LibroService libroService;
+
+
 
     public static void main(String[] args) {
         SpringApplication.run(LiterasearchApplication.class, args);
@@ -19,7 +26,7 @@ public class LiterasearchApplication implements CommandLineRunner {
         System.out.println("Explora miles de libros gratuitos del Proyecto Gutenberg.\n");
         
         // Iniciar el menú principal
-        MenuPrincipal menu = new MenuPrincipal();
+        MenuPrincipal menu = new MenuPrincipal(libroService);
         menu.mostrarMenu();
     }
 }

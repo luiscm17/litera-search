@@ -1,4 +1,4 @@
-package com.luiscm.literasearch.services;
+package com.luiscm.literasearch.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;

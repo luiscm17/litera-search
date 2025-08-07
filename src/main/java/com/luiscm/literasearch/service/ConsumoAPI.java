@@ -1,4 +1,4 @@
-package com.luiscm.literasearch.services;
+package com.luiscm.literasearch.service;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;

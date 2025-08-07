@@ -8,7 +8,7 @@ import java.util.List;
 public record DatosLibros(
     int id,
     String title,
-    List<Autor> authors,
+        List<DatosAutor> authors,
     List<String> languages,
     @JsonProperty("download_count") int downloadCount,
     List<String> subjects,
@@ -16,7 +16,7 @@ public record DatosLibros(
 ) {
     public String getAuthorName() {
         if (authors != null && !authors.isEmpty()) {
-            return authors.get(0).name();
+                        return authors.get(0).nombre();
         }
         return "Desconocido";
     }
