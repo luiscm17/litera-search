@@ -20,10 +20,9 @@ public class Libro {
     @JoinColumn(name = "autor_id")
     private Autor autor;
 
-    // Constructor por defecto requerido por JPA
-    public Libro() {}
+    public Libro() {
+    }
 
-    // Constructor para crear libros a partir de los datos de la API
     public Libro(String titulo, String idioma, Integer descargas, Autor autor) {
         this.titulo = titulo;
         this.idioma = idioma;
@@ -31,7 +30,6 @@ public class Libro {
         this.autor = autor;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -75,10 +73,10 @@ public class Libro {
     @Override
     public String toString() {
         return "--- LIBRO ---\n" +
-               "Titulo: " + titulo + "\n" +
-               "Autor: " + (autor != null ? autor.getNombre() : "Desconocido") + "\n" +
-               "Idioma: " + idioma + "\n" +
-               "Descargas: " + descargas + "\n" +
-               "-------------\n";
+                "Titulo: " + titulo + "\n" +
+                "Autor: " + (autor != null ? autor.getNombre() : "Desconocido") + "\n" +
+                "Idioma: " + idioma + "\n" +
+                "Descargas: " + descargas + "\n" +
+                "-------------\n";
     }
 }

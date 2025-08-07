@@ -21,17 +21,14 @@ public class Autor {
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libros = new ArrayList<>();
 
-    // Constructor por defecto requerido por JPA
     public Autor() {}
 
-    // Constructor para crear autores a partir de los datos de la API
     public Autor(String nombre, Integer anioNacimiento, Integer anioFallecimiento) {
         this.nombre = nombre;
         this.anioNacimiento = anioNacimiento;
         this.anioFallecimiento = anioFallecimiento;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -69,7 +66,6 @@ public class Autor {
     }
 
     public void setLibros(List<Libro> libros) {
-        // Al establecer los libros, tambien establecemos la referencia inversa en cada libro
         for (Libro libro : libros) {
             libro.setAutor(this);
         }

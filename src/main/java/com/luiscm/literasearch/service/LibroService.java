@@ -26,14 +26,12 @@ public class LibroService {
     @Transactional
     public void guardarLibro(DatosLibros datosLibro) {
         try {
-            // 1. Verificar si el libro ya existe por titulo
             Optional<Libro> libroExistente = libroRepository.findByTituloIgnoreCase(datosLibro.title());
             if (libroExistente.isPresent()) {
                 System.out.println("\nEl libro '" + datosLibro.title() + "' ya está guardado en el historial.");
                 return;
             }
 
-            // 2. Obtener datos del autor y verificar si existe
             if (datosLibro.authors() == null || datosLibro.authors().isEmpty()) {
                 System.out.println("\nNo se puede guardar el libro porque no tiene autor.");
                 return;
@@ -45,31 +43,22 @@ public class LibroService {
                 return;
             }
             
-            // Limitar la longitud del título si es necesario
             String titulo = datosLibro.title();
             if (titulo.length() > 1000) {
                 titulo = titulo.substring(0, 1000);
                 System.out.println("\nAdvertencia: El título se ha truncado a 1000 caracteres.");
             }
             
-            // Buscar o crear el autor
             Optional<Autor> autorExistente = autorRepository.findByNombreIgnoreCase(datosAutor.nombre());
-            Autor autor;
-            
-            if (autorExistente.isPresent()) {
-                autor = autorExistente.get();
-            } else {
-                // Crear y guardar el autor si no existe
-                autor = new Autor(
+            Autor autor = autorExistente.orElseGet(() -> {
+                Autor nuevoAutor = new Autor(
                     datosAutor.nombre(), 
                     datosAutor.anioNacimiento(), 
                     datosAutor.anioFallecimiento()
                 );
-                autor = autorRepository.save(autor);
-            }
+                return autorRepository.save(nuevoAutor);
+            });
 
-            // Crear y guardar el nuevo libro
-            // Usar 0 si no hay idioma especificado
             String idioma = (datosLibro.getFirstLanguage() != null && !datosLibro.getFirstLanguage().isEmpty()) 
                 ? datosLibro.getFirstLanguage() 
                 : "Desconocido";
@@ -77,7 +66,7 @@ public class LibroService {
             Libro nuevoLibro = new Libro(
                 titulo,
                 idioma,
-                datosLibro.downloadCount(), // downloadCount es un int primitivo, no puede ser null
+                datosLibro.downloadCount(), 
                 autor
             );
             
@@ -94,11 +83,7 @@ public class LibroService {
         return libroRepository.findAll();
     }
     
-    /**
-     * Obtiene la cantidad de libros por idioma
-     * @param idioma Código del idioma (ej: "es", "en")
-     * @return Cantidad de libros en el idioma especificado
-     */
+    // Cuenta los libros por código de idioma (ej: "es", "en")
     public Long contarLibrosPorIdioma(String idioma) {
         return libroRepository.countByLanguage(idioma);
     }

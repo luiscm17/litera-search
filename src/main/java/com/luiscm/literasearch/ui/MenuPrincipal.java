@@ -1,25 +1,28 @@
 package com.luiscm.literasearch.ui;
 
-import com.luiscm.literasearch.model.Libro;
-import java.io.Console;
-import java.util.List;
+import com.luiscm.literasearch.model.Autor;
 import com.luiscm.literasearch.model.DatosLibros;
+import com.luiscm.literasearch.model.Libro;
+import com.luiscm.literasearch.service.AutorService;
 import com.luiscm.literasearch.service.ConsumoAPI;
 import com.luiscm.literasearch.service.IConvierteDatos;
 import com.luiscm.literasearch.service.LibroService;
+import java.io.Console;
+import java.util.List;
 
 public class MenuPrincipal {
     private final Console console;
     private final LibroService libroService;
+    private final AutorService autorService;
     private final ConsumoAPI consumoAPI = new ConsumoAPI();
     private final IConvierteDatos conversor = new com.luiscm.literasearch.service.ConvierteDatos();
 
-    // Constantes para formato de texto
     private static final String LINEA = "===================================";
 
-    public MenuPrincipal(LibroService libroService) {
+    public MenuPrincipal(LibroService libroService, AutorService autorService) {
         this.console = System.console();
         this.libroService = libroService;
+        this.autorService = autorService;
     }
 
     public void mostrarMenu() {
@@ -39,8 +42,9 @@ public class MenuPrincipal {
             System.out.println("1. Buscar libro por ID");
             System.out.println("2. Buscar libros por título");
             System.out.println("3. Buscar libros por autor");
-            System.out.println("4. Ver historial de búsqueda");
-            System.out.println("5. Ver estadísticas de libros");
+            System.out.println("4. Buscar autores vivos en un año");
+            System.out.println("5. Ver historial de búsqueda");
+            System.out.println("6. Ver estadísticas de libros");
             System.out.println("0. Salir");
             
             try {
@@ -52,8 +56,9 @@ public class MenuPrincipal {
                     case 1 -> buscarLibroPorId();
                     case 2 -> buscarLibrosPorTitulo();
                     case 3 -> buscarLibrosPorAutor();
-                    case 4 -> mostrarHistorialDeBusqueda();
-                    case 5 -> mostrarEstadisticas();
+                    case 4 -> buscarAutoresVivosEnAnio();
+                    case 5 -> mostrarHistorialDeBusqueda();
+                    case 6 -> mostrarEstadisticas();
                     case 0 -> {
                         System.out.println("\nGracias por usar LiteraSearch. ¡Hasta pronto!");
                         System.exit(0);
@@ -230,7 +235,7 @@ public class MenuPrincipal {
         System.out.println("\nESTADÍSTICAS DE LIBROS");
         System.out.println(LINEA);
         
-        // Obtener conteo de libros por idioma
+
         Long librosEspanol = libroService.contarLibrosPorIdioma("es");
         Long librosIngles = libroService.contarLibrosPorIdioma("en");
         
@@ -241,5 +246,61 @@ public class MenuPrincipal {
         System.out.println(LINEA);
         
         console.readLine("\nPresione Enter para volver al menú principal...");
+    }
+    
+    private void buscarAutoresVivosEnAnio() {
+        System.out.println("\nBUSCAR AUTORES VIVOS EN UN AÑO");
+        System.out.println(LINEA);
+        
+        while (true) {
+            try {
+                String input = console.readLine("Ingrese el año a consultar (o 'salir' para volver): ").trim();
+                
+                if (input.equalsIgnoreCase("salir")) {
+                    return;
+                }
+                
+                int anio = Integer.parseInt(input);
+                
+                // Validar que sea un año razonable (entre 1000 y 2100)
+                if (anio < 1000 || anio > 2100) {
+                    System.out.println("Por favor ingrese un año entre 1000 y 2100.");
+                    continue;
+                }
+                
+                List<Autor> autores = autorService.buscarAutoresVivosEnAnio(anio);
+                
+                System.out.println("\nAUTORES VIVOS EN EL AÑO " + anio);
+                System.out.println(LINEA);
+                
+                if (autores.isEmpty()) {
+                    System.out.println("No se encontraron autores vivos en el año " + anio);
+                } else {
+                    for (Autor autor : autores) {
+                        String infoAutor = String.format("- %s", autor.getNombre());
+                        
+                        if (autor.getAnioNacimiento() != null) {
+                            infoAutor += String.format(" (Nacimiento: %d", autor.getAnioNacimiento());
+                            if (autor.getAnioFallecimiento() != null) {
+                                infoAutor += String.format(", Fallecimiento: %d)", autor.getAnioFallecimiento());
+                            } else {
+                                infoAutor += ")";
+                            }
+                        }
+                        
+                        System.out.println(infoAutor);
+                    }
+                    System.out.printf("\nTotal: %d autor(es) encontrado(s)\n", autores.size());
+                }
+                
+                System.out.println(LINEA);
+                console.readLine("\nPresione Enter para realizar otra búsqueda...");
+                
+            } catch (NumberFormatException e) {
+                System.out.println("ERROR: Por favor ingrese un año válido (número de 4 dígitos).");
+            } catch (Exception e) {
+                System.out.println("ERROR: " + e.getMessage());
+            }
+        }
     }
 }
